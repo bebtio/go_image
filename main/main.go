@@ -6,24 +6,9 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+    "github.com/bebtio/go_image/image"
 )
-
-type Pixel struct {
-	r, g, b uint8
-}
-
-type Image struct {
-	numRows uint32
-	numCols uint32
-	pixels  []Pixel
-}
-
-func (im Image) GetPixel(row uint32, col uint32) Pixel {
-
-	index := im.numCols*row + col
-
-	return im.pixels[index]
-}
 
 func ScanNext(scanner *bufio.Scanner) string {
 	scanner.Scan()
@@ -59,6 +44,7 @@ func LoadppmImage(imagePath string) Image {
 	image.numRows = uint32(numRows)
 
 	// The max size field. I'm not using it here.
+	// May use this later to normalize between 0-255 if max size is greater than 255.
 	pixels := make([]Pixel, numCols*numRows)
 
 	// Loop over the pixels and get each channel (r,g,b).
