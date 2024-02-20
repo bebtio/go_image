@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-    "github.com/bebtio/go_image/image"
+	"go_image/go_image"
 )
 
 func ScanNext(scanner *bufio.Scanner) string {
@@ -16,9 +16,9 @@ func ScanNext(scanner *bufio.Scanner) string {
 	return text
 }
 
-func LoadppmImage(imagePath string) Image {
+func LoadppmImage(imagePath string) go_image.Image {
 
-	image := Image{}
+	image := go_image.Image{}
 	imFile, err := os.Open(imagePath)
 
 	if err != nil {
@@ -40,12 +40,12 @@ func LoadppmImage(imagePath string) Image {
 	numCols, _ := strconv.ParseUint(ScanNext(imScanner), 10, 32)
 	numRows, _ := strconv.ParseUint(ScanNext(imScanner), 10, 32)
 
-	image.numCols = uint32(numCols)
-	image.numRows = uint32(numRows)
+	image.NumCols = uint32(numCols)
+	image.NumRows = uint32(numRows)
 
 	// The max size field. I'm not using it here.
 	// May use this later to normalize between 0-255 if max size is greater than 255.
-	pixels := make([]Pixel, numCols*numRows)
+	pixels := make([]go_image.Pixel, numCols*numRows)
 
 	// Loop over the pixels and get each channel (r,g,b).
 	numPixels := uint32(numCols) * uint32(numRows)
@@ -54,27 +54,27 @@ func LoadppmImage(imagePath string) Image {
 
 		// Get red channel
 		colorChan, _ = strconv.ParseUint(ScanNext(imScanner), 10, 8)
-		pixels[index].r = uint8(colorChan)
+		pixels[index].R = uint8(colorChan)
 
 		// Get green channel
 		colorChan, _ = strconv.ParseUint(ScanNext(imScanner), 10, 8)
-		pixels[index].g = uint8(colorChan)
+		pixels[index].G = uint8(colorChan)
 
 		// Get blue channel
 		colorChan, _ = strconv.ParseUint(ScanNext(imScanner), 10, 8)
-		pixels[index].b = uint8(colorChan)
+		pixels[index].B = uint8(colorChan)
 	}
 
-	image.pixels = pixels
+	image.Pixels = pixels
 	return image
 }
 
-func DumpImageAscii(im Image) {
-	for r := uint32(0); r < im.numRows; r++ {
-		for c := uint32(0); c < im.numCols; c++ {
+func DumpImageAscii(im go_image.Image) {
+	for r := uint32(0); r < im.NumRows; r++ {
+		for c := uint32(0); c < im.NumCols; c++ {
 			p := im.GetPixel(r, c)
 
-			fmt.Printf("%d %d %d   ", p.r, p.g, p.b)
+			fmt.Printf("%d %d %d   ", p.R, p.G, p.B)
 		}
 		fmt.Println("")
 	}
